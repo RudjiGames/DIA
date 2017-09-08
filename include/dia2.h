@@ -4506,6 +4506,15 @@ EXTERN_C const IID IID_IDiaSymbol;
         virtual /* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE get_coffGroup( 
             /* [retval][out] */ IDiaSymbol **pRetVal) = 0;
         
+        virtual /* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE get_bindID( 
+            /* [retval][out] */ DWORD *pRetVal) = 0;
+        
+        virtual /* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE get_bindSpace( 
+            /* [retval][out] */ DWORD *pRetVal) = 0;
+        
+        virtual /* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE get_bindSlot( 
+            /* [retval][out] */ DWORD *pRetVal) = 0;
+        
     };
     
     
@@ -5505,6 +5514,18 @@ EXTERN_C const IID IID_IDiaSymbol;
             IDiaSymbol * This,
             /* [retval][out] */ IDiaSymbol **pRetVal);
         
+        /* [id][helpstring][propget] */ HRESULT ( STDMETHODCALLTYPE *get_bindID )( 
+            IDiaSymbol * This,
+            /* [retval][out] */ DWORD *pRetVal);
+        
+        /* [id][helpstring][propget] */ HRESULT ( STDMETHODCALLTYPE *get_bindSpace )( 
+            IDiaSymbol * This,
+            /* [retval][out] */ DWORD *pRetVal);
+        
+        /* [id][helpstring][propget] */ HRESULT ( STDMETHODCALLTYPE *get_bindSlot )( 
+            IDiaSymbol * This,
+            /* [retval][out] */ DWORD *pRetVal);
+        
         END_INTERFACE
     } IDiaSymbolVtbl;
 
@@ -6226,6 +6247,15 @@ EXTERN_C const IID IID_IDiaSymbol;
 
 #define IDiaSymbol_get_coffGroup(This,pRetVal)	\
     ( (This)->lpVtbl -> get_coffGroup(This,pRetVal) ) 
+
+#define IDiaSymbol_get_bindID(This,pRetVal)	\
+    ( (This)->lpVtbl -> get_bindID(This,pRetVal) ) 
+
+#define IDiaSymbol_get_bindSpace(This,pRetVal)	\
+    ( (This)->lpVtbl -> get_bindSpace(This,pRetVal) ) 
+
+#define IDiaSymbol_get_bindSlot(This,pRetVal)	\
+    ( (This)->lpVtbl -> get_bindSlot(This,pRetVal) ) 
 
 #endif /* COBJMACROS */
 
@@ -7544,6 +7574,42 @@ void __RPC_STUB IDiaSymbol_get_characteristics_Stub(
 
 
 void __RPC_STUB IDiaSymbol_get_coffGroup_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE IDiaSymbol_get_bindID_Proxy( 
+    IDiaSymbol * This,
+    /* [retval][out] */ DWORD *pRetVal);
+
+
+void __RPC_STUB IDiaSymbol_get_bindID_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE IDiaSymbol_get_bindSpace_Proxy( 
+    IDiaSymbol * This,
+    /* [retval][out] */ DWORD *pRetVal);
+
+
+void __RPC_STUB IDiaSymbol_get_bindSpace_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][helpstring][propget] */ HRESULT STDMETHODCALLTYPE IDiaSymbol_get_bindSlot_Proxy( 
+    IDiaSymbol * This,
+    /* [retval][out] */ DWORD *pRetVal);
+
+
+void __RPC_STUB IDiaSymbol_get_bindSlot_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,

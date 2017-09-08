@@ -272,6 +272,7 @@ typedef enum CV_builtin_e {
     CV_BI_HLSL_MIN12INT                 = 0x0221,
     CV_BI_HLSL_MIN16INT                 = 0x0222,
     CV_BI_HLSL_MIN16UINT                = 0x0223,
+    CV_BI_HLSL_CONSTANT_BUFFER          = 0x0224,
 
     // 0x0400 - 0xffff - Unused.
     
@@ -299,6 +300,8 @@ typedef enum CV_CFL_LANG {
     CV_CFL_JSCRIPT  = 0x0E,
     CV_CFL_MSIL     = 0x0F,  // Unknown MSIL (LTCG of .NETMODULE)
     CV_CFL_HLSL     = 0x10,  // High Level Shader Language
+    CV_CFL_OBJC     = 0x11,  // Objective-C
+    CV_CFL_OBJCXX   = 0x12,  // Objective-C++
 } CV_CFL_LANG;
 
 
@@ -745,10 +748,12 @@ typedef enum CV_HREG_e {
     CV_REG_YMM7D2     =    394,
     CV_REG_YMM7D3     =    395,
 
-    CV_REG_BND0       =    396,
+    CV_REG_BND0       =    396,    // x86 MPX bounds registers
     CV_REG_BND1       =    397,
     CV_REG_BND2       =    398,
     CV_REG_BND3       =    399,
+    CV_REG_BNDCFGU    =    400,
+    CV_REG_BNDSTATUS  =    401,
 
     // registers for the 68K processors
 
@@ -1577,10 +1582,12 @@ typedef enum CV_HREG_e {
     CV_ARM64_LR     =  80,
     CV_ARM64_SP     =  81,
     CV_ARM64_ZR     =  82,
+    CV_ARM64_PC     =  83,
 
     // statue register
 
     CV_ARM64_NZCV   =  90,
+    CV_ARM64_CPSR   =  91,
 
     // 32-bit floating point registers
 
@@ -1690,7 +1697,78 @@ typedef enum CV_HREG_e {
     // Floating point status register
 
     CV_ARM64_FPSR   =  220,
+    CV_ARM64_FPCR   =  221,
     
+    // 32-bit floating point registers
+
+    CV_ARM64_B0     =  230,
+    CV_ARM64_B1     =  231,
+    CV_ARM64_B2     =  232,
+    CV_ARM64_B3     =  233,
+    CV_ARM64_B4     =  234,
+    CV_ARM64_B5     =  235,
+    CV_ARM64_B6     =  236,
+    CV_ARM64_B7     =  237,
+    CV_ARM64_B8     =  238,
+    CV_ARM64_B9     =  239,
+    CV_ARM64_B10    =  240,
+    CV_ARM64_B11    =  241,
+    CV_ARM64_B12    =  242,
+    CV_ARM64_B13    =  243,
+    CV_ARM64_B14    =  244,
+    CV_ARM64_B15    =  245,
+    CV_ARM64_B16    =  246,
+    CV_ARM64_B17    =  247,
+    CV_ARM64_B18    =  248,
+    CV_ARM64_B19    =  249,
+    CV_ARM64_B20    =  250,
+    CV_ARM64_B21    =  251,
+    CV_ARM64_B22    =  252,
+    CV_ARM64_B23    =  253,
+    CV_ARM64_B24    =  254,
+    CV_ARM64_B25    =  255,
+    CV_ARM64_B26    =  256,
+    CV_ARM64_B27    =  257,
+    CV_ARM64_B28    =  258,
+    CV_ARM64_B29    =  259,
+    CV_ARM64_B30    =  260,
+    CV_ARM64_B31    =  261,
+
+    // 32-bit floating point registers
+
+    CV_ARM64_H0     =  270,
+    CV_ARM64_H1     =  271,
+    CV_ARM64_H2     =  272,
+    CV_ARM64_H3     =  273,
+    CV_ARM64_H4     =  274,
+    CV_ARM64_H5     =  275,
+    CV_ARM64_H6     =  276,
+    CV_ARM64_H7     =  277,
+    CV_ARM64_H8     =  278,
+    CV_ARM64_H9     =  279,
+    CV_ARM64_H10    =  280,
+    CV_ARM64_H11    =  281,
+    CV_ARM64_H12    =  282,
+    CV_ARM64_H13    =  283,
+    CV_ARM64_H14    =  284,
+    CV_ARM64_H15    =  285,
+    CV_ARM64_H16    =  286,
+    CV_ARM64_H17    =  287,
+    CV_ARM64_H18    =  288,
+    CV_ARM64_H19    =  289,
+    CV_ARM64_H20    =  290,
+    CV_ARM64_H21    =  291,
+    CV_ARM64_H22    =  292,
+    CV_ARM64_H23    =  293,
+    CV_ARM64_H24    =  294,
+    CV_ARM64_H25    =  295,
+    CV_ARM64_H26    =  296,
+    CV_ARM64_H27    =  297,
+    CV_ARM64_H28    =  298,
+    CV_ARM64_H29    =  299,
+    CV_ARM64_H30    =  300,
+    CV_ARM64_H31    =  301,
+
     //
     // Register set for Intel IA64
     //
@@ -3636,7 +3714,14 @@ typedef enum CV_HREG_e {
     CV_AMD64_YMM15D0    =  684,
     CV_AMD64_YMM15D1    =  685,
     CV_AMD64_YMM15D2    =  686,
-    CV_AMD64_YMM15D3    =  687
+    CV_AMD64_YMM15D3    =  687,
+
+    CV_AMD64_BND0       =  688,        // AMD64 MPX bounds registers
+    CV_AMD64_BND1       =  689,
+    CV_AMD64_BND2       =  690,
+    CV_AMD64_BND3       =  691,
+    CV_AMD64_BNDCFGU    =  692,
+    CV_AMD64_BNDSTATUS  =  693
 
 
     // Note:  Next set of platform registers need to go into a new enum...
