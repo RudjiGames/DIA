@@ -12,7 +12,8 @@
 //      Enumeration for function call type
 
 
-typedef enum CV_call_e {
+typedef enum CV_call_e
+{
     CV_CALL_NEAR_C      = 0x00, // near right to left push, caller pops stack
     CV_CALL_FAR_C       = 0x01, // far right to left push, caller pops stack
     CV_CALL_NEAR_PASCAL = 0x02, // near left to right push, callee pops stack
@@ -38,7 +39,8 @@ typedef enum CV_call_e {
     CV_CALL_CLRCALL     = 0x16, // clr call
     CV_CALL_INLINE      = 0x17, // Marker for routines always inlined and thus lacking a convention
     CV_CALL_NEAR_VECTOR = 0x18, // near left to right push with regs, callee pops stack
-    CV_CALL_RESERVED    = 0x19  // first unused call enumeration
+    CV_CALL_SWIFT       = 0x19, // Swift calling convention
+    CV_CALL_RESERVED    = 0x20  // first unused call enumeration
 
     // Do NOT add any more machine specific conventions.  This is to be used for
     // calling conventions in the source only (e.g. __cdecl, __stdcall).
@@ -48,13 +50,16 @@ typedef enum CV_call_e {
 //      Values for the access protection of class attributes
 
 
-typedef enum CV_access_e {
+typedef enum CV_access_e
+{
     CV_private   = 1,
     CV_protected = 2,
     CV_public    = 3
 } CV_access_e;
 
-typedef enum THUNK_ORDINAL {
+
+typedef enum THUNK_ORDINAL
+{
     THUNK_ORDINAL_NOTYPE,       // standard thunk
     THUNK_ORDINAL_ADJUSTOR,     // "this" adjustor thunk
     THUNK_ORDINAL_VCALL,        // virtual call thunk
@@ -62,14 +67,16 @@ typedef enum THUNK_ORDINAL {
     THUNK_ORDINAL_LOAD,         // thunk which loads the address to jump to
                                 //  via unknown means...
 
- // trampoline thunk ordinals   - only for use in Trampoline thunk symbols
+    // trampoline thunk ordinals   - only for use in Trampoline thunk symbols
+
     THUNK_ORDINAL_TRAMP_INCREMENTAL,
     THUNK_ORDINAL_TRAMP_BRANCHISLAND,
-
+    THUNK_ORDINAL_TRAMP_STRICTICF,
 } THUNK_ORDINAL;
 
 
-enum CV_SourceChksum_t {
+enum CV_SourceChksum_t
+{
     CHKSUM_TYPE_NONE = 0,        // indicates no checksum is available
     CHKSUM_TYPE_MD5,
     CHKSUM_TYPE_SHA1,
@@ -124,6 +131,7 @@ enum SymTagEnum
     SymTagExport,
     SymTagHeapAllocationSite,
     SymTagCoffGroup,
+    SymTagInlinee,
     SymTagMax
 };
 
@@ -188,12 +196,14 @@ enum BasicType
     btHresult = 31,
     btChar16 = 32,  // char16_t
     btChar32 = 33,  // char32_t
+    btChar8  = 34,  // char8_t
 };
 
 
 //      enumeration for type modifier values
 
-typedef enum CV_modifier_e {
+typedef enum CV_modifier_e
+{
     // 0x0000 - 0x01ff - Reserved.
 
     CV_MOD_INVALID                      = 0x0000,
@@ -230,8 +240,8 @@ typedef enum CV_modifier_e {
 //      built-in type kinds
 
 
-typedef enum CV_builtin_e {
-
+typedef enum CV_builtin_e
+{
     // 0x0000 - 0x01ff - Reserved.
     CV_BI_INVALID                       = 0x0000,
     
@@ -283,7 +293,8 @@ typedef enum CV_builtin_e {
 //  enum describing the compile flag source language
 
 
-typedef enum CV_CFL_LANG {
+typedef enum CV_CFL_LANG
+{
     CV_CFL_C        = 0x00,
     CV_CFL_CXX      = 0x01,
     CV_CFL_FORTRAN  = 0x02,
@@ -303,13 +314,15 @@ typedef enum CV_CFL_LANG {
     CV_CFL_HLSL     = 0x10,  // High Level Shader Language
     CV_CFL_OBJC     = 0x11,  // Objective-C
     CV_CFL_OBJCXX   = 0x12,  // Objective-C++
+    CV_CFL_SWIFT    = 0x13,  // Swift
 } CV_CFL_LANG;
 
 
 //  enum describing target processor
 
 
-typedef enum CV_CPU_TYPE_e {
+typedef enum CV_CPU_TYPE_e
+{
     CV_CFL_8080             = 0x00,
     CV_CFL_8086             = 0x01,
     CV_CFL_80286            = 0x02,
@@ -375,10 +388,13 @@ typedef enum CV_CPU_TYPE_e {
     CV_CFL_ARMNT            = 0xF4,
     CV_CFL_ARM64            = 0xF6,
     CV_CFL_HYBRID_X86_ARM64 = 0xF7,
+    CV_CFL_ARM64EC          = 0xF8,
+    CV_CFL_ARM64X           = 0xF9,
     CV_CFL_D3D11_SHADER     = 0x100,
 } CV_CPU_TYPE_e;
 
-typedef enum CV_HREG_e {
+typedef enum CV_HREG_e
+{
     // Register subset shared by all processor types,
     // must not overlap with any of the ranges below, hence the high values
 
@@ -783,6 +799,8 @@ typedef enum CV_HREG_e {
     CV_REG_K5         =    423,
     CV_REG_K6         =    424,
     CV_REG_K7        =     425,
+
+    CV_REG_SSP       =     426,      // CET- Shadow Stack Pointer
 
     // registers for the 68K processors
 
@@ -1613,7 +1631,7 @@ typedef enum CV_HREG_e {
     CV_ARM64_ZR     =  82,
     CV_ARM64_PC     =  83,
 
-    // statue register
+    // status registers
 
     CV_ARM64_NZCV   =  90,
     CV_ARM64_CPSR   =  91,
@@ -1819,7 +1837,7 @@ typedef enum CV_HREG_e {
     CV_ARM64_V16    =  326,
     CV_ARM64_V17    =  327,
     CV_ARM64_V18    =  328,
-    CV_ARM64_V19    =  333,
+    CV_ARM64_V19    =  329,
     CV_ARM64_V20    =  330,
     CV_ARM64_V21    =  331,
     CV_ARM64_V22    =  332,
@@ -1827,42 +1845,46 @@ typedef enum CV_HREG_e {
     CV_ARM64_V24    =  334,
     CV_ARM64_V25    =  335,
     CV_ARM64_V26    =  336,
-    CV_ARM64_V31    =  337,
+    CV_ARM64_V27    =  337,
+    CV_ARM64_V28    =  338,
+    CV_ARM64_V29    =  339,
+    CV_ARM64_V30    =  340,
+    CV_ARM64_V31    =  341,
 
     // 128-bit SIMD registers upper 64 bits
 
-    CV_ARM64_Q0H    =  340,
-    CV_ARM64_Q1H    =  341,
-    CV_ARM64_Q2H    =  342,
-    CV_ARM64_Q3H    =  343,
-    CV_ARM64_Q4H    =  344,
-    CV_ARM64_Q5H    =  345,
-    CV_ARM64_Q6H    =  346,
-    CV_ARM64_Q7H    =  347,
-    CV_ARM64_Q8H    =  348,
-    CV_ARM64_Q9H    =  349,
-    CV_ARM64_Q10H   =  350,
-    CV_ARM64_Q11H   =  351,
-    CV_ARM64_Q12H   =  352,
-    CV_ARM64_Q13H   =  353,
-    CV_ARM64_Q14H   =  354,
-    CV_ARM64_Q15H   =  355,
-    CV_ARM64_Q16H   =  356,
-    CV_ARM64_Q17H   =  357,
-    CV_ARM64_Q18H   =  358,
-    CV_ARM64_Q19H   =  359,
-    CV_ARM64_Q20H   =  360,
-    CV_ARM64_Q21H   =  361,
-    CV_ARM64_Q22H   =  362,
-    CV_ARM64_Q23H   =  363,
-    CV_ARM64_Q24H   =  364,
-    CV_ARM64_Q25H   =  365,
-    CV_ARM64_Q26H   =  366,
-    CV_ARM64_Q27H   =  367,
-    CV_ARM64_Q28H   =  368,
-    CV_ARM64_Q29H   =  369,
-    CV_ARM64_Q30H   =  370,
-    CV_ARM64_Q31H   =  371,
+    CV_ARM64_Q0H    =  350,
+    CV_ARM64_Q1H    =  351,
+    CV_ARM64_Q2H    =  352,
+    CV_ARM64_Q3H    =  353,
+    CV_ARM64_Q4H    =  354,
+    CV_ARM64_Q5H    =  355,
+    CV_ARM64_Q6H    =  356,
+    CV_ARM64_Q7H    =  357,
+    CV_ARM64_Q8H    =  358,
+    CV_ARM64_Q9H    =  359,
+    CV_ARM64_Q10H   =  360,
+    CV_ARM64_Q11H   =  361,
+    CV_ARM64_Q12H   =  362,
+    CV_ARM64_Q13H   =  363,
+    CV_ARM64_Q14H   =  364,
+    CV_ARM64_Q15H   =  365,
+    CV_ARM64_Q16H   =  366,
+    CV_ARM64_Q17H   =  367,
+    CV_ARM64_Q18H   =  368,
+    CV_ARM64_Q19H   =  369,
+    CV_ARM64_Q20H   =  370,
+    CV_ARM64_Q21H   =  371,
+    CV_ARM64_Q22H   =  372,
+    CV_ARM64_Q23H   =  373,
+    CV_ARM64_Q24H   =  374,
+    CV_ARM64_Q25H   =  375,
+    CV_ARM64_Q26H   =  376,
+    CV_ARM64_Q27H   =  377,
+    CV_ARM64_Q28H   =  378,
+    CV_ARM64_Q29H   =  379,
+    CV_ARM64_Q30H   =  380,
+    CV_ARM64_Q31H   =  381,
 
     //
     // Register set for Intel IA64
@@ -3911,12 +3933,92 @@ typedef enum CV_HREG_e {
     CV_AMD64_ZMM14H     =  780,
     CV_AMD64_ZMM15H     =  781,
 
+    CV_AMD64_XMM16L     =  782,     // extended KATMAI registers
+    CV_AMD64_XMM17L     =  783,
+    CV_AMD64_XMM18L     =  784,
+    CV_AMD64_XMM19L     =  785,
+    CV_AMD64_XMM20L     =  786,
+    CV_AMD64_XMM21L     =  787,
+    CV_AMD64_XMM22L     =  788,
+    CV_AMD64_XMM23L     =  789,
+    CV_AMD64_XMM24L     =  790,
+    CV_AMD64_XMM25L     =  791,
+    CV_AMD64_XMM26L     =  792,
+    CV_AMD64_XMM27L     =  793,
+    CV_AMD64_XMM28L     =  794,
+    CV_AMD64_XMM29L     =  795,
+    CV_AMD64_XMM30L     =  796,
+    CV_AMD64_XMM31L     =  797,
+
+    CV_AMD64_XMM16_0    =  798,
+    CV_AMD64_XMM17_0    =  799,
+    CV_AMD64_XMM18_0    =  800,
+    CV_AMD64_XMM19_0    =  801,
+    CV_AMD64_XMM20_0    =  802,
+    CV_AMD64_XMM21_0    =  803,
+    CV_AMD64_XMM22_0    =  804,
+    CV_AMD64_XMM23_0    =  805,
+    CV_AMD64_XMM24_0    =  806,
+    CV_AMD64_XMM25_0    =  807,
+    CV_AMD64_XMM26_0    =  808,
+    CV_AMD64_XMM27_0    =  809,
+    CV_AMD64_XMM28_0    =  810,
+    CV_AMD64_XMM29_0    =  811,
+    CV_AMD64_XMM30_0    =  812,
+    CV_AMD64_XMM31_0    =  813,
+
+    CV_AMD64_XMM16H     =  814,
+    CV_AMD64_XMM17H     =  815,
+    CV_AMD64_XMM18H     =  816,
+    CV_AMD64_XMM19H     =  817,
+    CV_AMD64_XMM20H     =  818,
+    CV_AMD64_XMM21H     =  819,
+    CV_AMD64_XMM22H     =  820,
+    CV_AMD64_XMM23H     =  821,
+    CV_AMD64_XMM24H     =  822,
+    CV_AMD64_XMM25H     =  823,
+    CV_AMD64_XMM26H     =  824,
+    CV_AMD64_XMM27H     =  825,
+    CV_AMD64_XMM28H     =  826,
+    CV_AMD64_XMM29H     =  827,
+    CV_AMD64_XMM30H     =  828,
+    CV_AMD64_XMM31H     =  829,
+
+    CV_AMD64_EMM16H     =  830,
+    CV_AMD64_EMM17H     =  831,
+    CV_AMD64_EMM18H     =  832,
+    CV_AMD64_EMM19H     =  833,
+    CV_AMD64_EMM20H     =  834,
+    CV_AMD64_EMM21H     =  835,
+    CV_AMD64_EMM22H     =  836,
+    CV_AMD64_EMM23H     =  837,
+    CV_AMD64_EMM24H     =  838,
+    CV_AMD64_EMM25H     =  839,
+    CV_AMD64_EMM26H     =  840,
+    CV_AMD64_EMM27H     =  841,
+    CV_AMD64_EMM28H     =  842,
+    CV_AMD64_EMM29H     =  843,
+    CV_AMD64_EMM30H     =  844,
+    CV_AMD64_EMM31H     =  845,
+
+    CV_AMD64_SSP        =  846,      // CET- Shadow Stack Pointer
+
+    CV_AMD64_TMM0       =  847,     // AMX tile registers
+    CV_AMD64_TMM1       =  848,
+    CV_AMD64_TMM2       =  849,
+    CV_AMD64_TMM3       =  850,
+    CV_AMD64_TMM4       =  851,
+    CV_AMD64_TMM5       =  852,
+    CV_AMD64_TMM6       =  853,
+    CV_AMD64_TMM7       =  854,
+
     // Note:  Next set of platform registers need to go into a new enum...
     // this one is above 44K now.
 
 } CV_HREG_e;
 
-typedef enum CV_HLSLREG_e {
+typedef enum CV_HLSLREG_e
+{
     CV_HLSLREG_TEMP                                = 0,  
     CV_HLSLREG_INPUT                               = 1,  
     CV_HLSLREG_OUTPUT                              = 2,  
@@ -3993,7 +4095,8 @@ typedef enum CV_HLSLMemorySpace_e
     CV_HLSL_MEMSPACE_MAX          = 0x0F,
 } CV_HLSLMemorySpace_e;
 
-enum {
+enum
+{
     NAMEHASH_BUILD_START,
     NAMEHASH_BUILD_PAUSE,
     NAMEHASH_BUILD_RESUME,
@@ -4002,5 +4105,20 @@ enum {
     NAMEHASH_BUILD_OOM = NAMEHASH_BUILD_ERROR,
     NAMEHASH_BUILD_FAIL_TO_OPEN_MOD,
 };
+
+typedef enum CV_CoroutineKind_e
+{
+    CV_COROUTINEKIND_NONE,      // Not a coroutine
+    CV_COROUTINEKIND_PRIMARY,   // The original coroutine function
+    CV_COROUTINEKIND_INIT,      // Initialization function, sets up the coroutine frame
+    CV_COROUTINEKIND_RESUME,    // Resume function, contains the coroutine body code
+    CV_COROUTINEKIND_DESTROY    // Destroy function, tears down the coroutine frame
+} CV_CoroutineKind_e;
+
+typedef enum CV_AssociationKind_e
+{
+    CV_ASSOCIATIONKIND_NONE,         // No associated symbol
+    CV_ASSOCIATIONKIND_COROUTINE     // Associated symbol is the primary coroutine function
+} CV_AssociationKind_e;
 
 #endif
